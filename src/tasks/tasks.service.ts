@@ -1,16 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto.js';
 
+type Task = {
+  id: number,
+  title: string;
+  completed: boolean
+}
+
 @Injectable()
 export class TasksService {
-  tasks: any[] = [];
+  tasks: Task[] = [];
+  nextId: number = 0
 
   getAllTasks() {
     return this.tasks
   }
 
   createTask(body: CreateTaskDto) {
-    this.tasks.push(body);
-    return;
+    const task: Task = {
+      id: this.nextId++,
+      title: body.title,
+      completed: false
+    }
+
+    this.tasks.push(task);
+
+    return task;
   }
 }

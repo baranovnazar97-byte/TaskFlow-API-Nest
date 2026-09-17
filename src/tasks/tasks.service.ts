@@ -1,28 +1,40 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import jwt from 'jsonwebtoken';
 import { CreateTaskDto } from './dto/create-task.dto.js';
 import { UpdateTaskDto } from './dto/update-task.dto.js';
 
 type Task = {
-  id: number,
+  id: number;
   title: string;
-  completed: boolean
-}
+  completed: boolean;
+};
 
 @Injectable()
 export class TasksService {
   tasks: Task[] = [];
-  nextId: number = 0
+  nextId: number = 0;
+
+  createToken() {
+    const payload = {
+      userId: 1,
+      role: 'user',
+    };
+
+    const secret = 'test';
+
+    return jwt.sign(payload, secret);
+  }
 
   getAllTasks() {
-    return this.tasks
+    return this.tasks;
   }
 
   createTask(body: CreateTaskDto) {
     const task: Task = {
       id: this.nextId++,
       title: body.title,
-      completed: false
-    }
+      completed: false,
+    };
 
     this.tasks.push(task);
 
@@ -33,10 +45,10 @@ export class TasksService {
     const find = this.tasks.find((item) => item.id === id);
 
     if (!find) {
-      throw new NotFoundException('Task not found')
+      throw new NotFoundException('Task not found');
     }
 
-    return find
+    return find;
   }
 
   updateTask(id: number, dto: UpdateTaskDto) {
@@ -53,7 +65,7 @@ export class TasksService {
     const index = this.tasks.findIndex((item) => item.id === id);
 
     if (index === -1) {
-      throw new NotFoundException('Task not found')
+      throw new NotFoundException('Task not found');
     }
 
     this.tasks.splice(index, 1);

@@ -7,9 +7,13 @@ import {
   Param,
   Patch,
   Post,
+  Req,
+  SetMetadata,
   UseGuards,
 } from '@nestjs/common';
+import { type Request } from 'express';
 import { AuthGuard } from '../auth/auth.guard.js';
+import { RolesGuard } from '../roles/roles.guard.js';
 import { CreateTaskDto } from './dto/create-task.dto.js';
 import { UpdateTaskDto } from './dto/update-task.dto.js';
 import { TasksService } from './tasks.service.js';
@@ -23,10 +27,11 @@ export class TasksController {
     return this.tasksService.createToken();
   }
 
-  @UseGuards(AuthGuard)
-  @Get()
-  getAll() {
-    return this.tasksService.getAllTasks();
+  @SetMetadata('roles', ['admin'])
+  @UseGuards(AuthGuard, RolesGuard)
+  @Get('test')
+  getAll(@Req() request: Request) {
+    return request.user;
   }
 
   @Post()

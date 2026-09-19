@@ -20,9 +20,11 @@ export class TasksService {
       role: 'user',
     };
 
-    const secret = 'test';
+    const secret = 'my-secret';
 
-    return jwt.sign(payload, secret);
+    const token = jwt.sign(payload, secret);
+
+    return token;
   }
 
   getAllTasks() {
